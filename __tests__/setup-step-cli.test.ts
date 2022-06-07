@@ -3,6 +3,7 @@ jest.mock('@actions/exec')
 jest.mock('@actions/io')
 jest.mock('@actions/tool-cache')
 jest.mock('node:process')
+jest.mock('@octokit/request')
 import * as step from '../src/setup-step-cli'
 import {expect, jest, test} from '@jest/globals'
 
@@ -11,6 +12,47 @@ const exec = require('@actions/exec')
 const tc = require('@actions/tool-cache')
 const process = require('process')
 const io = require('@actions/io')
+const request = require('@octokit/request')
+
+test('run should succeed with latest version', async () => {
+  // Specific variables for this test and mock Actions input
+  const version = 'latest'
+  const extractPath = '/opt/step'
+
+  // Mock octokit response for latest release
+  request.request = jest.fn().mockImplementationOnce(() => ({
+    data: {
+      tag_name: 'v9999.99.99'
+    }
+  }))
+
+  // Mock os and platform specific to this test
+  Object.defineProperty(process, 'platform', {
+    value: 'linux'
+  })
+  Object.defineProperty(process, 'arch', {
+    value: 'x64'
+  })
+
+  // Mock tools-cache funtions return values
+  tc.downloadTool = jest.fn().mockReturnValueOnce('step.tar.gz')
+  tc.extractTar = jest.fn().mockReturnValueOnce(extractPath)
+  tc.cacheDir = jest.fn().mockReturnValueOnce(extractPath)
+
+  // Run function and validate steps
+  await step.installStepCli(version)
+  expect(io.mkdirP).toHaveBeenCalledWith(extractPath)
+  expect(tc.downloadTool).toHaveBeenCalledWith(
+    'https://github.com/smallstep/cli/releases/download/v9999.99.99/step_linux_9999.99.99_amd64.tar.gz'
+  )
+  expect(tc.extractTar).toHaveBeenCalledWith('step.tar.gz', extractPath, [
+    'xz',
+    '--strip-components=1'
+  ])
+  expect(tc.cacheDir).toHaveBeenCalledWith(extractPath, 'step', version)
+  expect(core.addPath).toHaveBeenCalledWith(`${extractPath}/bin`)
+  expect(exec.exec).toHaveBeenCalledWith('step', ['version'])
+})
 
 test('run should succeed on linux x64', async () => {
   // Specific variables for this test and mock Actions input

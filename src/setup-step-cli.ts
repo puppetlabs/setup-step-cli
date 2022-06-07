@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import * as io from '@actions/io'
 import * as tc from '@actions/tool-cache'
+import {request} from '@octokit/request'
 
 export async function installStepCli(version: string): Promise<string> {
   let artifactVersion
@@ -10,7 +11,14 @@ export async function installStepCli(version: string): Promise<string> {
   let artifactArch
 
   if (version === 'latest') {
-    artifactVersion = 'fake'
+    const response = await request(
+      'GET /repos/{owner}/{repo}/releases/latest',
+      {
+        owner: 'smallstep',
+        repo: 'cli'
+      }
+    )
+    artifactVersion = response.data.tag_name.replace('v', '')
   } else {
     artifactVersion = version
   }
