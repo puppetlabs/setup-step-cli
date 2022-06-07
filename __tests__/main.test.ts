@@ -1,29 +1,41 @@
-import {wait} from '../src/wait'
-import * as process from 'process'
-import * as cp from 'child_process'
-import * as path from 'path'
-import {expect, test} from '@jest/globals'
+jest.mock('@actions/core')
+jest.mock('../src/setup-step-cli')
+import {run} from '../src/main'
+import {beforeEach, expect, jest, test} from '@jest/globals'
+const core = require('@actions/core')
+const step = require('../src/setup-step-cli')
 
-test('throws invalid number', async () => {
-  const input = parseInt('foo', 10)
-  await expect(wait(input)).rejects.toThrow('milliseconds not a number')
+test('should suceed calling main program entrypoint', async () => {
+  // Mock getting Actions input and return value for installStepCli
+  const version = '0.0.0'
+  core.getInput = jest.fn().mockReturnValueOnce(version)
+  Object.defineProperty(step, 'installStepCli', {
+    value: jest.fn().mockImplementationOnce(() => Promise.resolve())
+  })
+
+  // Run function and validate steps
+  run()
+  expect(step.installStepCli).toHaveBeenCalledWith('0.0.0')
 })
 
-test('wait 500 ms', async () => {
-  const start = new Date()
-  await wait(500)
-  const end = new Date()
-  var delta = Math.abs(end.getTime() - start.getTime())
-  expect(delta).toBeGreaterThan(450)
+test('should fail calling main program entrypoint with Error thrown', async () => {
+  // Mock installStepCli throwing error
+  step.installStepCli.mockImplementationOnce(() => {
+    throw new Error('some failure')
+  })
+
+  // Run function and validate steps
+  run()
+  expect(step.installStepCli).toHaveBeenCalled
+  expect(core.setFailed).toHaveBeenCalledWith('some failure')
 })
 
-// shows how the runner will run a javascript action with env / stdout protocol
-test('test runs', () => {
-  process.env['INPUT_MILLISECONDS'] = '500'
-  const np = process.execPath
-  const ip = path.join(__dirname, '..', 'lib', 'main.js')
-  const options: cp.ExecFileSyncOptions = {
-    env: process.env
-  }
-  console.log(cp.execFileSync(np, [ip], options).toString())
+test('should fail calling main program entrypoint without Error thrown', async () => {
+  // Mock installStepCli throwing error
+  step.installStepCli.mockImplementationOnce(() => Promise.reject())
+
+  // Run function and validate steps
+  run()
+  expect(step.installStepCli).toHaveBeenCalled
+  expect(core.setFailed).toHaveBeenCalledTimes(0)
 })

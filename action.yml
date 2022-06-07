@@ -1,11 +1,13 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Setup Smallstep step-cli tool'
+description: |-
+  Downloads and installs the Smallstep step-cli tool and bootstraps the GitHub
+  Actions environment with the specified certificate authority parameters.
+author: 'Puppet, Inc.'
 inputs:
-  milliseconds: # change this
+  version:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'The version of the step-cli tool to install.'
+    default: 'latest'
 runs:
   using: 'node16'
   main: 'dist/index.js'
