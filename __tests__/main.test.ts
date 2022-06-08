@@ -5,7 +5,7 @@ import {beforeEach, expect, jest, test} from '@jest/globals'
 const core = require('@actions/core')
 const step = require('../src/setup-step-cli')
 
-test('should suceed calling main program entrypoint', async () => {
+test('should succeed calling main program entrypoint', async () => {
   // Mock getting Actions input and return value for installStepCli
   const version = '0.0.0'
   core.getInput = jest.fn().mockReturnValueOnce(version)
@@ -18,8 +18,23 @@ test('should suceed calling main program entrypoint', async () => {
   expect(step.installStepCli).toHaveBeenCalledWith('0.0.0')
 })
 
+test('should fail version input validation', async () => {
+  // Mock getting Actions input and return value for installStepCli
+  const version = 'notasemver'
+  core.getInput = jest.fn().mockReturnValueOnce(version)
+
+  // Run function and validate steps
+  run()
+  expect(step.installStepCli).toHaveBeenCalledTimes(0)
+  expect(core.setFailed).toHaveBeenCalledWith(
+    'The supplied input notasemver is not a valid version. Please supply a semver format like major.minor.hotfix'
+  )
+})
+
 test('should fail calling main program entrypoint with Error thrown', async () => {
   // Mock installStepCli throwing error
+  const version = '0.0.0'
+  core.getInput = jest.fn().mockReturnValueOnce(version)
   step.installStepCli.mockImplementationOnce(() => {
     throw new Error('some failure')
   })
@@ -31,7 +46,9 @@ test('should fail calling main program entrypoint with Error thrown', async () =
 })
 
 test('should fail calling main program entrypoint without Error thrown', async () => {
-  // Mock installStepCli throwing error
+  // Mock installStepCli rejected without error
+  const version = '0.0.0'
+  core.getInput = jest.fn().mockReturnValueOnce(version)
   step.installStepCli.mockImplementationOnce(() => Promise.reject())
 
   // Run function and validate steps
