@@ -1,0 +1,24 @@
+name: Snyk Scan
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+      
+      - name: Install Snyk
+        run: |
+          curl https://static.snyk.io/cli/latest/snyk-linux -o snyk
+          chmod +x ./snyk
+          mv ./snyk /usr/local/bin/
+
+      - name: Run Snyk to check for vulnerabilities
+        run: snyk monitor --org=development-infrastructure-and-operations-dio --project-name=${{ github.repository }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_DIO_KEY }}
+          
