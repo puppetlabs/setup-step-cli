@@ -14,7 +14,7 @@ export async function run(): Promise<void> {
 }
 
 function validateInput(version: string): void {
-  const versionValidation = /^\d+\.\d+\.\d+$/
+  const versionValidation = /^\d+\.\d+\.\d+|latest$/
 
   if (!versionValidation.test(version)) {
     throw new Error(

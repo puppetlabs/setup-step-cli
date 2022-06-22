@@ -15,10 +15,24 @@ jobs:
           npm install
       - run: |
           npm run all
-  test: # make sure the action works on a clean machine without building
+  test-linux: # make sure the action works on a clean linux machine without building
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: ./
         with:
-          version: '0.20.0'
+          version: 'latest'
+  test-macos: # make sure the action works on a clean macos machine without building
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        with:
+          version: 'latest'
+  test-windows: # make sure the action works on a clean windows machine without building
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        with:
+          version: 'latest'

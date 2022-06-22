@@ -7,8 +7,8 @@ import {request} from '@octokit/request'
 export async function installStepCli(version: string): Promise<string> {
   let artifactVersion
   let artifactPlatform
-  let artifactExtractPath
   let artifactArch
+  let compressFormat
 
   if (version === 'latest') {
     const response = await request(
@@ -25,13 +25,13 @@ export async function installStepCli(version: string): Promise<string> {
 
   if (process.platform === 'darwin') {
     artifactPlatform = 'darwin'
-    artifactExtractPath = '/usr/local/opt/step'
+    compressFormat = 'tar.gz'
   } else if (process.platform === 'linux') {
     artifactPlatform = 'linux'
-    artifactExtractPath = '/opt/step'
+    compressFormat = 'tar.gz'
   } else if (process.platform === 'win32') {
     artifactPlatform = 'windows'
-    artifactExtractPath = 'C:\\ProgramData\\step'
+    compressFormat = 'zip'
   } else {
     throw new Error(
       `The platform ${process.platform} is not supported by this action`
@@ -48,20 +48,23 @@ export async function installStepCli(version: string): Promise<string> {
     )
   }
 
-  await io.mkdirP(artifactExtractPath)
+  await io.mkdirP('step')
 
-  const stepCLIUrl = `https://github.com/smallstep/cli/releases/download/v${artifactVersion}/step_${artifactPlatform}_${artifactVersion}_${artifactArch}.tar.gz`
+  const stepCLIUrl = `https://github.com/smallstep/cli/releases/download/v${artifactVersion}/step_${artifactPlatform}_${artifactVersion}_${artifactArch}.${compressFormat}`
   const stepCLIDownload = await tc.downloadTool(stepCLIUrl)
   core.info(`Downloaded step from ${stepCLIUrl} to ${stepCLIDownload}`)
-  const stepCLIExtracted = await tc.extractTar(
-    stepCLIDownload,
-    `${artifactExtractPath}`,
-    ['xz', '--strip-components=1']
-  )
+  const stepCLIExtracted = await tc.extractTar(stepCLIDownload, 'step', [
+    'xz',
+    '--strip-components=1'
+  ])
   core.info(
     `Extracted step_${artifactPlatform}_${artifactVersion}_${artifactArch}.tar.gz to ${stepCLIExtracted}`
   )
-  const stepCachedPath = await tc.cacheDir(stepCLIExtracted, 'step', version)
+  const stepCachedPath = await tc.cacheDir(
+    stepCLIExtracted,
+    'step',
+    artifactVersion
+  )
   core.addPath(`${stepCachedPath}/bin`)
   core.info(
     `Added ${stepCachedPath} to tool-cache and ${stepCachedPath}/bin to $PATH`

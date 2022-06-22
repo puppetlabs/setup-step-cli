@@ -1,7 +1,5 @@
 name: 'Setup Smallstep step-cli tool'
-description: |-
-  Downloads and installs the Smallstep step-cli tool and bootstraps the GitHub
-  Actions environment with the specified certificate authority parameters.
+description: 'Downloads and installs the Smallstep step-cli a specified version of the step-cli tool.'
 author: 'Puppet, Inc.'
 inputs:
   version:

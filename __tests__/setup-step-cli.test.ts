@@ -17,7 +17,6 @@ const request = require('@octokit/request')
 test('run should succeed with latest version', async () => {
   // Specific variables for this test and mock Actions input
   const version = 'latest'
-  const extractPath = '/opt/step'
 
   // Mock octokit response for latest release
   request.request = jest.fn().mockImplementationOnce(() => ({
@@ -36,28 +35,27 @@ test('run should succeed with latest version', async () => {
 
   // Mock tools-cache funtions return values
   tc.downloadTool = jest.fn().mockReturnValueOnce('step.tar.gz')
-  tc.extractTar = jest.fn().mockReturnValueOnce(extractPath)
-  tc.cacheDir = jest.fn().mockReturnValueOnce(extractPath)
+  tc.extractTar = jest.fn().mockReturnValueOnce('step')
+  tc.cacheDir = jest.fn().mockReturnValueOnce('step')
 
   // Run function and validate steps
   await step.installStepCli(version)
-  expect(io.mkdirP).toHaveBeenCalledWith(extractPath)
+  expect(io.mkdirP).toHaveBeenCalledWith('step')
   expect(tc.downloadTool).toHaveBeenCalledWith(
     'https://github.com/smallstep/cli/releases/download/v9999.99.99/step_linux_9999.99.99_amd64.tar.gz'
   )
-  expect(tc.extractTar).toHaveBeenCalledWith('step.tar.gz', extractPath, [
+  expect(tc.extractTar).toHaveBeenCalledWith('step.tar.gz', 'step', [
     'xz',
     '--strip-components=1'
   ])
-  expect(tc.cacheDir).toHaveBeenCalledWith(extractPath, 'step', version)
-  expect(core.addPath).toHaveBeenCalledWith(`${extractPath}/bin`)
+  expect(tc.cacheDir).toHaveBeenCalledWith('step', 'step', '9999.99.99')
+  expect(core.addPath).toHaveBeenCalledWith('step/bin')
   expect(exec.exec).toHaveBeenCalledWith('step', ['version'])
 })
 
 test('run should succeed on linux x64', async () => {
   // Specific variables for this test and mock Actions input
   const version = '0.0.0'
-  const extractPath = '/opt/step'
 
   // Mock os and platform specific to this test
   Object.defineProperty(process, 'platform', {
@@ -69,28 +67,27 @@ test('run should succeed on linux x64', async () => {
 
   // Mock tools-cache funtions return values
   tc.downloadTool = jest.fn().mockReturnValueOnce('step.tar.gz')
-  tc.extractTar = jest.fn().mockReturnValueOnce(extractPath)
-  tc.cacheDir = jest.fn().mockReturnValueOnce(extractPath)
+  tc.extractTar = jest.fn().mockReturnValueOnce('step')
+  tc.cacheDir = jest.fn().mockReturnValueOnce('step')
 
   // Run function and validate steps
   await step.installStepCli(version)
-  expect(io.mkdirP).toHaveBeenCalledWith(extractPath)
+  expect(io.mkdirP).toHaveBeenCalledWith('step')
   expect(tc.downloadTool).toHaveBeenCalledWith(
     'https://github.com/smallstep/cli/releases/download/v0.0.0/step_linux_0.0.0_amd64.tar.gz'
   )
-  expect(tc.extractTar).toHaveBeenCalledWith('step.tar.gz', extractPath, [
+  expect(tc.extractTar).toHaveBeenCalledWith('step.tar.gz', 'step', [
     'xz',
     '--strip-components=1'
   ])
-  expect(tc.cacheDir).toHaveBeenCalledWith(extractPath, 'step', version)
-  expect(core.addPath).toHaveBeenCalledWith(`${extractPath}/bin`)
+  expect(tc.cacheDir).toHaveBeenCalledWith('step', 'step', version)
+  expect(core.addPath).toHaveBeenCalledWith('step/bin')
   expect(exec.exec).toHaveBeenCalledWith('step', ['version'])
 })
 
 test('run should succeed on linux arm64', async () => {
   // Specific variables for this test and mock Actions input
   const version = '0.0.0'
-  const extractPath = '/opt/step'
 
   // Mock os and platform specific to this test
   Object.defineProperty(process, 'platform', {
@@ -102,28 +99,27 @@ test('run should succeed on linux arm64', async () => {
 
   // Mock tools-cache funtions return values
   tc.downloadTool = jest.fn().mockReturnValueOnce('step.tar.gz')
-  tc.extractTar = jest.fn().mockReturnValueOnce(extractPath)
-  tc.cacheDir = jest.fn().mockReturnValueOnce(extractPath)
+  tc.extractTar = jest.fn().mockReturnValueOnce('step')
+  tc.cacheDir = jest.fn().mockReturnValueOnce('step')
 
   // Run function and validate steps
   await step.installStepCli(version)
-  expect(io.mkdirP).toHaveBeenCalledWith(extractPath)
+  expect(io.mkdirP).toHaveBeenCalledWith('step')
   expect(tc.downloadTool).toHaveBeenCalledWith(
     'https://github.com/smallstep/cli/releases/download/v0.0.0/step_linux_0.0.0_arm64.tar.gz'
   )
-  expect(tc.extractTar).toHaveBeenCalledWith('step.tar.gz', extractPath, [
+  expect(tc.extractTar).toHaveBeenCalledWith('step.tar.gz', 'step', [
     'xz',
     '--strip-components=1'
   ])
-  expect(tc.cacheDir).toHaveBeenCalledWith(extractPath, 'step', version)
-  expect(core.addPath).toHaveBeenCalledWith(`${extractPath}/bin`)
+  expect(tc.cacheDir).toHaveBeenCalledWith('step', 'step', version)
+  expect(core.addPath).toHaveBeenCalledWith('step/bin')
   expect(exec.exec).toHaveBeenCalledWith('step', ['version'])
 })
 
 test('run should succeed on darwin x64', async () => {
   // Specific variables for this test and mock Actions input
   const version = '0.0.0'
-  const extractPath = '/usr/local/opt/step'
 
   // Mock os and platform specific to this test
   Object.defineProperty(process, 'platform', {
@@ -135,28 +131,27 @@ test('run should succeed on darwin x64', async () => {
 
   // Mock tools-cache funtions return values
   tc.downloadTool = jest.fn().mockReturnValueOnce('step.tar.gz')
-  tc.extractTar = jest.fn().mockReturnValueOnce(extractPath)
-  tc.cacheDir = jest.fn().mockReturnValueOnce(extractPath)
+  tc.extractTar = jest.fn().mockReturnValueOnce('step')
+  tc.cacheDir = jest.fn().mockReturnValueOnce('step')
 
   // Run function and validate steps
   await step.installStepCli(version)
-  expect(io.mkdirP).toHaveBeenCalledWith(extractPath)
+  expect(io.mkdirP).toHaveBeenCalledWith('step')
   expect(tc.downloadTool).toHaveBeenCalledWith(
     'https://github.com/smallstep/cli/releases/download/v0.0.0/step_darwin_0.0.0_amd64.tar.gz'
   )
-  expect(tc.extractTar).toHaveBeenCalledWith('step.tar.gz', extractPath, [
+  expect(tc.extractTar).toHaveBeenCalledWith('step.tar.gz', 'step', [
     'xz',
     '--strip-components=1'
   ])
-  expect(tc.cacheDir).toHaveBeenCalledWith(extractPath, 'step', version)
-  expect(core.addPath).toHaveBeenCalledWith(`${extractPath}/bin`)
+  expect(tc.cacheDir).toHaveBeenCalledWith('step', 'step', version)
+  expect(core.addPath).toHaveBeenCalledWith('step/bin')
   expect(exec.exec).toHaveBeenCalledWith('step', ['version'])
 })
 
 test('run should succeed on windows x64', async () => {
   // Specific variables for this test and mock Actions input
   const version = '0.0.0'
-  const extractPath = 'C:\\ProgramData\\step'
 
   // Mock os and platform specific to this test
   Object.defineProperty(process, 'platform', {
@@ -168,28 +163,27 @@ test('run should succeed on windows x64', async () => {
 
   // Mock tools-cache funtions return values
   tc.downloadTool = jest.fn().mockReturnValueOnce('step.tar.gz')
-  tc.extractTar = jest.fn().mockReturnValueOnce(extractPath)
-  tc.cacheDir = jest.fn().mockReturnValueOnce(extractPath)
+  tc.extractTar = jest.fn().mockReturnValueOnce('step')
+  tc.cacheDir = jest.fn().mockReturnValueOnce('step')
 
   // Run function and validate steps
   await step.installStepCli(version)
-  expect(io.mkdirP).toHaveBeenCalledWith(extractPath)
+  expect(io.mkdirP).toHaveBeenCalledWith('step')
   expect(tc.downloadTool).toHaveBeenCalledWith(
-    'https://github.com/smallstep/cli/releases/download/v0.0.0/step_windows_0.0.0_amd64.tar.gz'
+    'https://github.com/smallstep/cli/releases/download/v0.0.0/step_windows_0.0.0_amd64.zip'
   )
-  expect(tc.extractTar).toHaveBeenCalledWith('step.tar.gz', extractPath, [
+  expect(tc.extractTar).toHaveBeenCalledWith('step.tar.gz', 'step', [
     'xz',
     '--strip-components=1'
   ])
-  expect(tc.cacheDir).toHaveBeenCalledWith(extractPath, 'step', version)
-  expect(core.addPath).toHaveBeenCalledWith(`${extractPath}/bin`)
+  expect(tc.cacheDir).toHaveBeenCalledWith('step', 'step', version)
+  expect(core.addPath).toHaveBeenCalledWith('step/bin')
   expect(exec.exec).toHaveBeenCalledWith('step', ['version'])
 })
 
 test('run should fail on unsupported platform', async () => {
   // Specific variables for this test and mock Actions input
   const version = '0.0.0'
-  const extractPath = ''
 
   // Mock os and platform specific to this test
   Object.defineProperty(process, 'platform', {
@@ -214,7 +208,6 @@ test('run should fail on unsupported platform', async () => {
 test('run should fail on unsupported architecture', async () => {
   // Specific variables for this test and mock Actions input
   const version = '0.0.0'
-  const extractPath = ''
 
   // Mock os and platform specific to this test
   Object.defineProperty(process, 'platform', {

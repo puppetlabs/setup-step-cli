@@ -57,7 +57,7 @@ function run() {
 }
 exports.run = run;
 function validateInput(version) {
-    const versionValidation = /^\d+\.\d+\.\d+$/;
+    const versionValidation = /^\d+\.\d+\.\d+|latest$/;
     if (!versionValidation.test(version)) {
         throw new Error(`The supplied input ${version} is not a valid version. Please supply a semver format like major.minor.hotfix`);
     }
@@ -115,8 +115,8 @@ function installStepCli(version) {
     return __awaiter(this, void 0, void 0, function* () {
         let artifactVersion;
         let artifactPlatform;
-        let artifactExtractPath;
         let artifactArch;
+        let compressFormat;
         if (version === 'latest') {
             const response = yield (0, request_1.request)('GET /repos/{owner}/{repo}/releases/latest', {
                 owner: 'smallstep',
@@ -129,15 +129,15 @@ function installStepCli(version) {
         }
         if (process.platform === 'darwin') {
             artifactPlatform = 'darwin';
-            artifactExtractPath = '/usr/local/opt/step';
+            compressFormat = 'tar.gz';
         }
         else if (process.platform === 'linux') {
             artifactPlatform = 'linux';
-            artifactExtractPath = '/opt/step';
+            compressFormat = 'tar.gz';
         }
         else if (process.platform === 'win32') {
             artifactPlatform = 'windows';
-            artifactExtractPath = 'C:\\ProgramData\\step';
+            compressFormat = 'zip';
         }
         else {
             throw new Error(`The platform ${process.platform} is not supported by this action`);
@@ -151,13 +151,16 @@ function installStepCli(version) {
         else {
             throw new Error(`The architecture ${process.arch} is not supported by this action`);
         }
-        yield io.mkdirP(artifactExtractPath);
-        const stepCLIUrl = `https://github.com/smallstep/cli/releases/download/v${artifactVersion}/step_${artifactPlatform}_${artifactVersion}_${artifactArch}.tar.gz`;
+        yield io.mkdirP('step');
+        const stepCLIUrl = `https://github.com/smallstep/cli/releases/download/v${artifactVersion}/step_${artifactPlatform}_${artifactVersion}_${artifactArch}.${compressFormat}`;
         const stepCLIDownload = yield tc.downloadTool(stepCLIUrl);
         core.info(`Downloaded step from ${stepCLIUrl} to ${stepCLIDownload}`);
-        const stepCLIExtracted = yield tc.extractTar(stepCLIDownload, `${artifactExtractPath}`, ['xz', '--strip-components=1']);
+        const stepCLIExtracted = yield tc.extractTar(stepCLIDownload, 'step', [
+            'xz',
+            '--strip-components=1'
+        ]);
         core.info(`Extracted step_${artifactPlatform}_${artifactVersion}_${artifactArch}.tar.gz to ${stepCLIExtracted}`);
-        const stepCachedPath = yield tc.cacheDir(stepCLIExtracted, 'step', version);
+        const stepCachedPath = yield tc.cacheDir(stepCLIExtracted, 'step', artifactVersion);
         core.addPath(`${stepCachedPath}/bin`);
         core.info(`Added ${stepCachedPath} to tool-cache and ${stepCachedPath}/bin to $PATH`);
         const allStepVersions = tc.findAllVersions('step');
