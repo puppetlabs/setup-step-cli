@@ -1,18 +1,25 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import * as step from './setup-step-cli'
 
-async function run(): Promise<void> {
+export async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
+    const version: string = core.getInput('version')
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    validateInput(version)
 
-    core.setOutput('time', new Date().toTimeString())
+    await step.installStepCli(version)
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
+  }
+}
+
+function validateInput(version: string): void {
+  const versionValidation = /^\d+\.\d+\.\d+|latest$/
+
+  if (!versionValidation.test(version)) {
+    throw new Error(
+      `The supplied input ${version} is not a valid version. Please supply a semver format like major.minor.hotfix`
+    )
   }
 }
 
