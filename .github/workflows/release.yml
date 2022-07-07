@@ -1,0 +1,86 @@
+name: Release Action
+
+on: workflow_dispatch
+
+jobs:
+  release:
+    name: Tag Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+          clean: true
+          fetch-depth: 0
+
+      - name: Get New Version
+        id: nv
+        run: |
+          semver=v$(jq --raw-output .version package.json)
+          majver=v$(jq --raw-output .version package.json | awk -F. '{print $1}')
+          echo "::set-output name=semver::$semver"
+          echo "::set-output name=majver::$majver"
+          echo "The new version was detected as ${semver} and the new major version was detected as ${majver}"
+
+      - name: Get Current Version
+        uses: actions/github-script@v6
+        id: cv
+        with:
+          script: |
+            const { data: response } = await github.rest.repos.getLatestRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            })
+            console.log(`The latest release is ${response.tag_name}`)
+            return response.tag_name
+          result-encoding: string
+
+      - name: Generate Changelog
+        uses: docker://githubchangeloggenerator/github-changelog-generator:1.16.2
+        with:
+          args: >-
+            --future-release ${{ steps.nv.outputs.semver }}
+        env:
+          CHANGELOG_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate Changelog
+        run : |
+          set -e
+          if output=$(git status --porcelain) && [ ! -z "$output" ]; then
+            echo "Here is the current git status:"
+            git status
+            echo
+            echo "The following changes were detected:"
+            git --no-pager diff
+            echo "Uncommitted PRs found in the changelog. Please submit a release prep PR of changes after running 'docker run -it --rm -e CHANGELOG_GITHUB_TOKEN -v "\$\(pwd\)":/usr/local/src/your-app githubchangeloggenerator/github-changelog-generator:1.16.2 github_changelog_generator --future-release ${{ steps.nv.outputs.semver }}'"
+            exit 1
+          fi
+
+      - name: Generate Release Notes
+        uses: docker://githubchangeloggenerator/github-changelog-generator:1.16.2
+        with:
+          args: >-
+            --since-tag ${{ steps.cv.outputs.result }}
+            --future-release ${{ steps.nv.outputs.semver }}
+            --output release-notes.md
+        env:
+          CHANGELOG_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Major Release Tag
+        uses: richardsimko/update-tag@v1
+        with:
+          tag_name: ${{ steps.nv.outputs.majver }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # After changing visibility to public, does this also publish to marketplace?
+      - name: Tag Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.nv.outputs.semver }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          bodyfile: release-notes.md
+          draft: false
+          prerelease: false
+          
