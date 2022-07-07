@@ -1,0 +1,4 @@
+project=setup-step-cli
+user=puppetlabs
+exclude_tags_regex=^v\d$
+exclude_labels=maintenance
