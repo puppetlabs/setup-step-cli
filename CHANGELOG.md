@@ -1,8 +1,8 @@
 # Changelog
 
-## [v0.0.1](https://github.com/puppetlabs/setup-step-cli/tree/v0.0.1) (2022-07-06)
+## [v1.0.0](https://github.com/puppetlabs/setup-step-cli/tree/v1.0.0) (2022-07-07)
 
-[Full Changelog](https://github.com/puppetlabs/setup-step-cli/compare/67676aef5a0cfd76858ce2ae884953ca768532ee...v0.0.1)
+[Full Changelog](https://github.com/puppetlabs/setup-step-cli/compare/67676aef5a0cfd76858ce2ae884953ca768532ee...v1.0.0)
 
 **Merged pull requests:**
 
