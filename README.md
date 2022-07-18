@@ -2,7 +2,23 @@
 
 [![build-test](https://github.com/puppetlabs/setup-step-cli/actions/workflows/test.yml/badge.svg)](https://github.com/puppetlabs/setup-step-cli/actions/workflows/test.yml)
 
+- [Description](#description)
+- [Support](#support)
+- [Action Inputs](#action-inputs)
+- [Examples](#examples)
+- [Development](#development)
+- [Dependabot](#dependabot)
+- [Releasing](#releasing)
+
+## Description
+
 This action downloads a specified version of the [smallstep cli](https://smallstep.com/docs/step-cli) on supported platforms and adds the `step` command to the runner's tool-cache.
+
+## Support
+
+This action is not supported or maintained by Puppet by Perforce and does not qualify for Puppet by Perforce Support plans.
+It's provided without guarantee or warranty and you can use it at your own risk.
+All bugfixes, updates, and new feature development will come from community contributions.
 
 ## Action Inputs
 
