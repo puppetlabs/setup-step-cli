@@ -1,8 +1,8 @@
 {
-  "name": "typescript-action",
+  "name": "puppetlabs-setup-step-cli",
   "version": "1.0.0",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "A custom GitHub Action that sets up the Smallstep step-cli tool",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/puppetlabs/setup-step-cli.git"
   },
   "keywords": [
     "actions",
     "node",
     "setup"
   ],
-  "author": "",
+  "author": "Jake Spain <jake.spain@pupept.com>",
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.6.0",
