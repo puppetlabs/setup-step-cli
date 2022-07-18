@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.1.0](https://github.com/puppetlabs/setup-step-cli/tree/v1.1.0) (2022-07-18)
+
+[Full Changelog](https://github.com/puppetlabs/setup-step-cli/compare/v1.0.0...v1.1.0)
+
+**Merged pull requests:**
+
+- Bump eslint from 8.17.0 to 8.20.0 [\#48](https://github.com/puppetlabs/setup-step-cli/pull/48) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump prettier from 2.5.1 to 2.7.1 [\#46](https://github.com/puppetlabs/setup-step-cli/pull/46) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @octokit/request from 5.6.3 to 6.2.0 [\#45](https://github.com/puppetlabs/setup-step-cli/pull/45) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @types/node from 16.11.39 to 18.0.6 [\#44](https://github.com/puppetlabs/setup-step-cli/pull/44) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update license and deps [\#43](https://github.com/puppetlabs/setup-step-cli/pull/43) ([yachub](https://github.com/yachub))
+
 ## [v1.0.0](https://github.com/puppetlabs/setup-step-cli/tree/v1.0.0) (2022-07-07)
 
 [Full Changelog](https://github.com/puppetlabs/setup-step-cli/compare/67676aef5a0cfd76858ce2ae884953ca768532ee...v1.0.0)

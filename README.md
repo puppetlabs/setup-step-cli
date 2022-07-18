@@ -66,8 +66,9 @@ When time allows, an action could added to target pull requests created by depen
 Open a release prep PR and run the release action:
 
 1. Bump the "version" parameter in `package.json` appropriately based merged pull requests since the last release.
-2. Run `npm run all`, commit and push changes to a new branch.
-3. Open a pull request against `main` and be sure to add the "maintenance" label.
-4. After the pull request is approved and merged, then navigate to Actions --> Release Action --> run workflow --> Branch: main --> Run workflow.
+2. Run `npm run all`
+3. Run `docker run -it --rm -e CHANGELOG_GITHUB_TOKEN -v $(pwd):/usr/local/src/your-app githubchangeloggenerator/github-changelog-generator:1.16.2 github_changelog_generator --future-release <INSERT_NEXT_VERSION>`
+4. Commit and push changes to a new branch, then open a pull request against `main` and be sure to add the "maintenance" label.
+5. After the pull request is approved and merged, then navigate to Actions --> Release Action --> run workflow --> Branch: main --> Run workflow.
 
 The action is now published! :rocket:
