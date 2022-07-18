@@ -37,6 +37,14 @@ npm install
 npm run all
 ```
 
+## Dependabot
+
+Dependabot doesn't know that when dependencies are updated, it should result in changes in the `dist` directory, which will cause the [check-dist](https://github.com/puppetlabs/setup-step-cli/blob/main/.github/workflows/check-dist.yml) action to fail.
+
+To remediate this, simply checkout the branch created by dependabot, run `npm install && npm run all`, then commit and push changes.
+
+When time allows, an action could added to target pull requests created by dependabot to run the commands above and push to the branch, so that manual intervention is not required.
+
 ## Releasing
 
 Open a release prep PR and run the release action:
