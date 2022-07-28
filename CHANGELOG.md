@@ -1,5 +1,16 @@
 # Changelog
 
+## [v1.1.1](https://github.com/puppetlabs/setup-step-cli/tree/v1.1.1) (2022-07-28)
+
+[Full Changelog](https://github.com/puppetlabs/setup-step-cli/compare/v1.1.0...v1.1.1)
+
+**Merged pull requests:**
+
+- Bump @types/node from 18.0.6 to 18.6.2 [\#55](https://github.com/puppetlabs/setup-step-cli/pull/55) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @typescript-eslint/parser from 5.30.7 to 5.31.0 [\#54](https://github.com/puppetlabs/setup-step-cli/pull/54) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump eslint-plugin-github from 4.3.6 to 4.3.7 [\#53](https://github.com/puppetlabs/setup-step-cli/pull/53) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @typescript-eslint/parser from 5.30.6 to 5.30.7 [\#51](https://github.com/puppetlabs/setup-step-cli/pull/51) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v1.1.0](https://github.com/puppetlabs/setup-step-cli/tree/v1.1.0) (2022-07-18)
 
 [Full Changelog](https://github.com/puppetlabs/setup-step-cli/compare/v1.0.0...v1.1.0)
