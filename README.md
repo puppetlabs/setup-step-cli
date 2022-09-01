@@ -2,6 +2,8 @@
 
 [![build-test](https://github.com/puppetlabs/setup-step-cli/actions/workflows/test.yml/badge.svg)](https://github.com/puppetlabs/setup-step-cli/actions/workflows/test.yml)
 
+:warning: This repository is no longer maintained. Please see the fork at [smallstep/setup-step-cli](https://github.com/smallstep/setup-step-cli) for further updates. :warning:
+
 - [Description](#description)
 - [Support](#support)
 - [Action Inputs](#action-inputs)
